@@ -1,1 +1,19 @@
-
+services:
+  - type: web
+    name: hit-student-performance
+    env: python
+    region: singapore
+    plan: free
+    buildCommand: |
+      cd backend
+      pip install -r requirements.txt
+      cd ../frontend
+      npm install
+      npm run build
+      mkdir -p ../backend/build
+      cp -r build/* ../backend/build/
+    startCommand: cd backend && gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+    healthCheckPath: /api/health
